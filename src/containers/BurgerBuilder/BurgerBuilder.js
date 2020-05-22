@@ -20,10 +20,10 @@ const Burgerbuilder = () => {
   const [ingredients, setIngredients] = useState();
   
   useEffect( () => {
-    const ingredients = FirestoreService.getIngredients();    
-    setIngredients(ingredients);
-    console.log(ingredients);
-  }, [] );
+    FirestoreService.getIngredients().then(result => {
+      setIngredients(result);
+    });    
+  }, []);
 
   const [totalPrice, setTotalPrice] = useState(4);
   const [purchaseble, setPurchasable] = useState(false);
