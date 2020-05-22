@@ -1,0 +1,25 @@
+.Menu{
+  height: 100%;
+  width: 40px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.Menu div{
+  height: 3px;
+  width: 90%;
+  background-color: white;
+}
+
+@media(min-width: 500px){
+  .Menu{
+    display:none;
+  }
+}
+
+
