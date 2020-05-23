@@ -10,7 +10,7 @@ import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICES = {
-  salad: 0.5,
+  salad: 0.25,
   cheese: 0.4,
   meat: 1.3,
   bacon: 0.7
