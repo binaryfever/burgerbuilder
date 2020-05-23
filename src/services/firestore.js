@@ -5,8 +5,8 @@ const REACT_API_KEY = process.env.REACT_APP_apiKey;
 const PROJECT_ID = process.env.REACT_APP_projectId;
 const firebaseConfig = {
     apiKey: REACT_API_KEY,
-     projectId: PROJECT_ID,
-    };
+    projectId: PROJECT_ID,
+};
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -28,19 +28,15 @@ export const createOrder = async (order) => {
 
 //get the order by id
 export const getIngredients  = async () => {
-  try{
+  //try{
     const ingredientsDoc = await db.collection('ingredients')
       .doc('ingredient').get();
     
     if(ingredientsDoc.exists){
       console.log(ingredientsDoc.data());
       return await ingredientsDoc.data();
-    } else{
+    }else{
       throw new Error("No such document");
     }
-  }
-  catch(error){
-    console.log(error);
-  }
 }
 //I need to unsubscribe from the snapshop somewhere

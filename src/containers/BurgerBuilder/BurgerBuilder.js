@@ -7,6 +7,7 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -18,11 +19,21 @@ const INGREDIENT_PRICES = {
 const Burgerbuilder = () => {
   
   const [ingredients, setIngredients] = useState();
-  
+  const [error, setError] = useState(null);
+
   useEffect( () => {
-    FirestoreService.getIngredients().then(result => {
-      setIngredients(result);
-    });    
+    async function fetchData(){
+      let response = null;
+      try{
+       response = await FirestoreService.getIngredients();
+       setIngredients(response);
+      }
+      catch(error){
+        console.log(error);
+        setError(error);
+      }
+    }
+    fetchData();
   }, []);
 
   const [totalPrice, setTotalPrice] = useState(4);
@@ -127,7 +138,12 @@ const Burgerbuilder = () => {
   let orderSummary = null;
 
  
-  let burger = <Spinner />;
+  let burger;
+
+  if(error === 'null'){
+    burger = <Spinner />;
+  }
+
   
   if(ingredients){
   burger = ( 
@@ -160,6 +176,7 @@ const Burgerbuilder = () => {
 
   return (
     <Aux>
+      <WithErrorHandler error={error} />
       <Modal 
         show={purchasing}
         modalClosed={purchasedCanceledHandler}>
