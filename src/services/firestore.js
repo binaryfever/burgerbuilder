@@ -36,7 +36,7 @@ export const getIngredients  = async () => {
       console.log(ingredientsDoc.data());
       return await ingredientsDoc.data();
     }else{
-      throw new Error("No such document");
+      throw new Error("Ingrdients can't be loaded.");
     }
 }
 //I need to unsubscribe from the snapshop somewhere

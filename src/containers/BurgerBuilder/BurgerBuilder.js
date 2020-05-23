@@ -135,9 +135,8 @@ const Burgerbuilder = () => {
   for (let key in disabledInfo){
     disabledInfo[key] = disabledInfo[key]  <= 0;
   }
+  
   let orderSummary = null;
-
- 
   let burger;
 
   if(error === 'null'){
