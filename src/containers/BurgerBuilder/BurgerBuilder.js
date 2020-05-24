@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import Aux from '../../hoc/Aux/Aux';
 import * as FirestoreService from '../../services/firestore';
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
@@ -146,7 +145,7 @@ const Burgerbuilder = () => {
   
   if(ingredients){
   burger = ( 
-      <Aux> 
+    <React.Fragment> 
       <Burger ingredients={ingredients}/>
       <BuildControls 
         ingredientAdded={addIngredientHandler} 
@@ -157,7 +156,7 @@ const Burgerbuilder = () => {
         ordered={purchaseHandler} 
       />
 
-      </Aux>
+      </React.Fragment>
   );
   
   orderSummary = 
@@ -174,7 +173,7 @@ const Burgerbuilder = () => {
   }
 
   return (
-    <Aux>
+    <React.Fragment>
       <WithErrorHandler error={error} />
       <Modal 
         show={purchasing}
@@ -182,7 +181,7 @@ const Burgerbuilder = () => {
         {orderSummary}
       </Modal>
     {burger}
-    </Aux>
+    </React.Fragment>
   );
 }
 

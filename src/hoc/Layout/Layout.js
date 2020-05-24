@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import Aux from '../Aux/Aux';
 import classes from './Layout.module.css';
 import Toolbar from '../../components/Toolbar/Toolbar';
 import SideDrawer from '../../components/SideDrawer/SideDrawer';
@@ -18,7 +17,7 @@ const Layout = ( props ) => {
   };
 
   return(
-    <Aux>
+    <React.Fragment>
       <Toolbar open={sideDrawerOpenHandler}/>
       <SideDrawer 
         open={showSideDrawer}
@@ -26,7 +25,7 @@ const Layout = ( props ) => {
       <main className={classes.content}>
         {props.children}
       </main>
-    </Aux>
+    </React.Fragment>
   );  
 };
 
