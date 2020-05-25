@@ -19,7 +19,6 @@ export const createOrder = async (order) => {
         created: firebase.firestore.FieldValue.serverTimestamp(),
         order: [{...order}]
       });
-     
   }
   catch(error){
     console.log('firestore.js: ', error);

@@ -15,12 +15,13 @@ const INGREDIENT_PRICES = {
   bacon: 0.7
 };
 
-const Burgerbuilder = () => {
+const Burgerbuilder = (props) => {
   
   const [ingredients, setIngredients] = useState();
   const [error, setError] = useState(null);
 
   useEffect( () => {
+    console.log(props);
     async function fetchData(){
       let response = null;
       try{
@@ -33,7 +34,7 @@ const Burgerbuilder = () => {
       }
     }
     fetchData();
-  }, []);
+  }, [props]);
 
   const [totalPrice, setTotalPrice] = useState(4);
   const [purchaseble, setPurchasable] = useState(false);
@@ -105,30 +106,42 @@ const Burgerbuilder = () => {
   };
 
  const purchaseConfirmedHandler = async () => {
-      setLoading(true); 
-      const order = {
-        ingredients: ingredients,
-        price: totalPrice,
-        customer: {
-          name: "Fred McHale",
-          address: {
-            street: "Test Street",
-            zipcode: 1234,
-            country: "USA"
-          },
-          email: "test@test.com"
-        },
-        deliverMethod: "fastest"
-      }
-    
-    try{
-      await FirestoreService.createOrder(order);
-      setLoading(false);
-      setPurchasing(false);
-    }catch(error){
-      setLoading(false);
-      setPurchasable(false);
+ //     setLoading(true); 
+ //     const order = {
+ //       ingredients: ingredients,
+ //       price: totalPrice,
+ //       customer: {
+ //         name: "Fred McHale",
+ //         address: {
+ //           street: "Test Street",
+ //           zipcode: 1234,
+ //           country: "USA"
+ //         },
+ //         email: "test@test.com"
+ //       },
+ //       deliverMethod: "fastest"
+ //     }
+ //   
+ //   try{
+ //     await FirestoreService.createOrder(order);
+ //     setLoading(false);
+ //     setPurchasing(false);
+ //   }catch(error){
+ //     setLoading(false);
+ //     setPurchasable(false);
+ //   }
+    const queryParams = [];
+    for(let i in ingredients){
+      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(ingredients[i]));
     }
+    queryParams.push('price=' + totalPrice);
+
+    const queryString = queryParams.join('&');
+
+    props.history.push({
+      pathname: '/checkout',
+      search: '?' + queryString
+    });
  };
 
   for (let key in disabledInfo){
