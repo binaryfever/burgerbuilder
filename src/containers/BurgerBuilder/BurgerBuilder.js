@@ -25,10 +25,13 @@ const Burgerbuilder = (props) => {
     async function fetchData(){
       let response = null;
       try{
-       response = await FirestoreService.getIngredients();
-       setIngredients(response);
-      }
-      catch(error){
+        response = await FirestoreService.getIngredients();
+        if(response instanceof Error){
+          throw response;
+        }else{
+          setIngredients(response);
+        }
+      }catch(error){
         console.log(error);
         setError(error);
       }

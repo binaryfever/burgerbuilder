@@ -13,29 +13,68 @@ const db = firebase.firestore();
 
 //Create the burger order
 export const createOrder = async (order) => {
-  try{
-    const response = await db.collection('orders');
+  const response = await db.collection('orders');
     await response.add({
         created: firebase.firestore.FieldValue.serverTimestamp(),
         order: [{...order}]
-      });
-  }
-  catch(error){
-    console.log('firestore.js: ', error);
+  });
+}
+
+//get the ingredients
+export const getIngredients  = async () => {
+  const ingredientsDoc = await db.collection('ingredients')
+      .doc('ingredient').get();
+    
+  if(ingredientsDoc.exists){
+    console.log(ingredientsDoc.data());
+    return await ingredientsDoc.data();
+  }else{
+    throw new Error("Couldn't load ingredients");
   }
 }
 
-//get the order by id
-export const getIngredients  = async () => {
-  //try{
-    const ingredientsDoc = await db.collection('ingredients')
-      .doc('ingredient').get();
+//get orders return an array of orders
+export const getOrders = async () => {
+  const orderSnapshot = await db.collection('orders').get();
+  let orderDocs = [];
+  let ordersArray = [];
+  
+  if(!orderSnapshot.empty){
+    orderDocs = await orderSnapshot.docs;
     
-    if(ingredientsDoc.exists){
-      console.log(ingredientsDoc.data());
-      return await ingredientsDoc.data();
-    }else{
-      throw new Error("Ingrdients can't be loaded.");
-    }
+    orderDocs.forEach( doc => {
+      let id = doc.id;
+      let orders = doc.data().order;
+      orders.forEach(order =>{
+        ordersArray.push({
+          id: id,
+          price: order.price,
+          ingredients: order.ingredients
+        });
+      });
+    });
+
+    return ordersArray;
+  }else{
+    throw Error("There are no orders to load");
+  }
+
 }
-//I need to unsubscribe from the snapshop somewhere
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
