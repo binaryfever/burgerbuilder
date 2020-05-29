@@ -60,21 +60,3 @@ export const getOrders = async () => {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
