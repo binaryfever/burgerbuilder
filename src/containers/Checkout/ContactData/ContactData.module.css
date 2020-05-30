@@ -9,8 +9,42 @@
 }
 
 .ContactData input{
-
+  width: 100%;
+  padding: 6px 10px;
+  font: inherit;
+  margin-bottom: 8px;
+  box-sizing: border-box;
   display: block;
+  outline: none;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.ContactData input:focus{
+  outline: none;
+  background-color: #ccc;
+}
+
+
+.ContactData select{
+  width: 100%;
+  padding: 6px 10px;
+  font: inherit;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  display: block;
+  outline: none;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+.ContactData select:focus{
+  outline: none;
+  background-color: #ccc;
+}
+
+.Invalid{
+  color: red;
 }
 
 @media (min-width: 500px) {
