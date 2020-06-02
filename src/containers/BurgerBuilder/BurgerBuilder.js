@@ -61,21 +61,7 @@ const Burgerbuilder = (props) => {
   //TODO: move the orders to the global state so I don't have to do
   //the below
   const purchaseConfirmedHandler = () =>{
-    const queryParams = [];
-        for(let i in state.ingredients){
-                queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(state.ingredients[i]));
-              }
-        queryParams.push('price=' + state.totalPrice);
-
-        const queryString = queryParams.join('&');
-
-        props.history.push({
-                pathname: '/checkout',
-                search: '?' + queryString
-              });
-    for (let key in disabledInfo){
-      disabledInfo[key] = disabledInfo[key]  <= 0;
-    }
+        props.history.push('/checkout');
   };
  
   for (let key in disabledInfo){
