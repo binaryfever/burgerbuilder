@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
+import configureIngredientsStore from './store/ingredients-store';
+
+configureIngredientsStore();
 
 ReactDOM.render(
   <React.StrictMode>

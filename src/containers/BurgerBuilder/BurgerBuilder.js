@@ -7,20 +7,13 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-
-const INGREDIENT_PRICES = {
-  salad: 0.25,
-  cheese: 0.4,
-  meat: 1.3,
-  bacon: 0.7
-};
+import { useStore } from '../../store/store';
 
 const Burgerbuilder = (props) => {
-  
-  const [ingredients, setIngredients] = useState();
+  const [state, dispatch] = useStore();
   const [error, setError] = useState(null);
 
-  useEffect( () => {
+/*  useEffect( () => {
     console.log(props);
     async function fetchData(){
       let response = null;
@@ -37,67 +30,24 @@ const Burgerbuilder = (props) => {
       }
     }
     fetchData();
-  }, [props]);
+    }, [props]);*/
 
-  const [totalPrice, setTotalPrice] = useState(4);
-  const [purchaseble, setPurchasable] = useState(false);
   const [purchasing, setPurchasing] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const addIngredientHandler = (type) => {
-    const oldCount = ingredients[type];
-    const updatedCount = oldCount + 1;
-    const updatedIngredients = {
-      ...ingredients
-    };
-
-    updatedIngredients[type] = updatedCount;
-    setIngredients(updatedIngredients);
-    
-    const priceAddition = INGREDIENT_PRICES[type];
-    const oldPrice = totalPrice;
-    const newPrice = oldPrice + priceAddition;
-    setTotalPrice(newPrice);
-
-    updatePurschasedState(updatedIngredients);
-  };
-
-  const removeIngredientHandler = (type) => {
-    const oldCount = ingredients[type];
-    const updatedCount = oldCount - 1;
-
-    if (updatedCount >= 0) {
-      const updatedIngredients = {
-        ...ingredients  
-      };
-
-      updatedIngredients[type] = updatedCount;
-      setIngredients(updatedIngredients);
-
-      const priceRemoval = INGREDIENT_PRICES[type];
-      const oldPrice = totalPrice;
-      const newPrice = oldPrice - priceRemoval;
-      setTotalPrice(newPrice);
-
-      updatePurschasedState(updatedIngredients);
-    }
-
-  };
 
   const updatePurschasedState = (ingredients) => {
     const sum = Object.keys(ingredients)
       .map(ingredientKey => {
-        return ingredients[ingredientKey];  
-      })
+                return ingredients[ingredientKey];  
+              })
       .reduce( (sum, el) => {
-        return sum + el;
-      } ,0);
-
-    setPurchasable(sum > 0);
+                return sum + el;
+              } ,0);
+      return sum > 0;
   };
 
   const disabledInfo = {
-    ...ingredients
+    ...state.ingredients
   };
 
   const purchaseHandler = () => {
@@ -108,49 +58,30 @@ const Burgerbuilder = (props) => {
     setPurchasing(false);
   };
 
- const purchaseConfirmedHandler = async () => {
- //     setLoading(true); 
- //     const order = {
- //       ingredients: ingredients,
- //       price: totalPrice,
- //       customer: {
- //         name: "Fred McHale",
- //         address: {
- //           street: "Test Street",
- //           zipcode: 1234,
- //           country: "USA"
- //         },
- //         email: "test@test.com"
- //       },
- //       deliverMethod: "fastest"
- //     }
- //   
- //   try{
- //     await FirestoreService.createOrder(order);
- //     setLoading(false);
- //     setPurchasing(false);
- //   }catch(error){
- //     setLoading(false);
- //     setPurchasable(false);
- //   }
+  //TODO: move the orders to the global state so I don't have to do
+  //the below
+  const purchaseConfirmedHandler = () =>{
     const queryParams = [];
-    for(let i in ingredients){
-      queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(ingredients[i]));
+        for(let i in state.ingredients){
+                queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(state.ingredients[i]));
+              }
+        queryParams.push('price=' + state.totalPrice);
+
+        const queryString = queryParams.join('&');
+
+        props.history.push({
+                pathname: '/checkout',
+                search: '?' + queryString
+              });
+    for (let key in disabledInfo){
+      disabledInfo[key] = disabledInfo[key]  <= 0;
     }
-    queryParams.push('price=' + totalPrice);
-
-    const queryString = queryParams.join('&');
-
-    props.history.push({
-      pathname: '/checkout',
-      search: '?' + queryString
-    });
- };
-
+  };
+ 
   for (let key in disabledInfo){
-    disabledInfo[key] = disabledInfo[key]  <= 0;
+       disabledInfo[key] = disabledInfo[key]  <= 0;
   }
-  
+
   let orderSummary = null;
   let burger;
 
@@ -158,17 +89,16 @@ const Burgerbuilder = (props) => {
     burger = <Spinner />;
   }
 
-  
-  if(ingredients){
+  if(state.ingredients){
   burger = ( 
     <React.Fragment> 
-      <Burger ingredients={ingredients}/>
+      <Burger ingredients={state.ingredients}/>
       <BuildControls 
-        ingredientAdded={addIngredientHandler} 
-        ingredientsRemoved={removeIngredientHandler} 
+        ingredientAdded={dispatch} 
+        ingredientsRemoved={dispatch} 
         disabled={disabledInfo}
-        price={totalPrice} 
-        purchaseble={purchaseble}
+        price={state.totalPrice} 
+        purchaseble={updatePurschasedState(state.ingredients)}
         ordered={purchaseHandler} 
       />
 
@@ -177,10 +107,10 @@ const Burgerbuilder = (props) => {
   
   orderSummary = 
       <OrderSummary 
-        ingredients={ingredients} 
+        ingredients={state.ingredients} 
         purchasedCanceled={purchasedCanceledHandler}
         purchaseConfirmed={purchaseConfirmedHandler}
-        price={totalPrice}/>;
+        price={state.totalPrice}/>;
   }
   
 
