@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import * as FirestoreService from '../../services/firestore';
 import Burger from '../../components/Burger/Burger';
@@ -7,30 +8,10 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import { useStore } from '../../store/store';
+import * as actionTypes from '../../store/actions';
 
 const Burgerbuilder = (props) => {
-  const [state, dispatch] = useStore();
   const [error, setError] = useState(null);
-
-/*  useEffect( () => {
-    console.log(props);
-    async function fetchData(){
-      let response = null;
-      try{
-        response = await FirestoreService.getIngredients();
-        if(response instanceof Error){
-          throw response;
-        }else{
-          setIngredients(response);
-        }
-      }catch(error){
-        console.log(error);
-        setError(error);
-      }
-    }
-    fetchData();
-    }, [props]);*/
 
   const [purchasing, setPurchasing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -47,9 +28,9 @@ const Burgerbuilder = (props) => {
   };
 
   const disabledInfo = {
-    ...state.ingredients
+    ...props.ingredients
   };
-
+  
   const purchaseHandler = () => {
     setPurchasing(true);
   };
@@ -63,7 +44,7 @@ const Burgerbuilder = (props) => {
   const purchaseConfirmedHandler = () =>{
         props.history.push('/checkout');
   };
- 
+  
   for (let key in disabledInfo){
        disabledInfo[key] = disabledInfo[key]  <= 0;
   }
@@ -74,29 +55,29 @@ const Burgerbuilder = (props) => {
   if(error === 'null'){
     burger = <Spinner />;
   }
-
-  if(state.ingredients){
-  burger = ( 
-    <React.Fragment> 
-      <Burger ingredients={state.ingredients}/>
-      <BuildControls 
-        ingredientAdded={dispatch} 
-        ingredientsRemoved={dispatch} 
-        disabled={disabledInfo}
-        price={state.totalPrice} 
-        purchaseble={updatePurschasedState(state.ingredients)}
-        ordered={purchaseHandler} 
-      />
+  
+  if(props.ingredients){
+    burger = ( 
+      <React.Fragment> 
+        <Burger ingredients={props.ingredients}/>
+        <BuildControls 
+          ingredientAdded={props.onIngredientAdded} 
+          ingredientsRemoved={props.onIngredientRemoved} 
+          disabled={disabledInfo}
+          price={props.totalPrice} 
+          purchaseble={updatePurschasedState(props.ingredients)}
+          ordered={purchaseHandler} 
+        />
 
       </React.Fragment>
-  );
+    );
   
-  orderSummary = 
-      <OrderSummary 
-        ingredients={state.ingredients} 
-        purchasedCanceled={purchasedCanceledHandler}
-        purchaseConfirmed={purchaseConfirmedHandler}
-        price={state.totalPrice}/>;
+    orderSummary = 
+        <OrderSummary 
+          ingredients={props.ingredients} 
+          purchasedCanceled={purchasedCanceledHandler}
+          purchaseConfirmed={purchaseConfirmedHandler}
+          price={props.totalPrice}/>;
   }
   
 
@@ -117,4 +98,19 @@ const Burgerbuilder = (props) => {
   );
 }
 
-export default Burgerbuilder;
+const mapStateToProps = (state) => {
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onIngredientAdded: (ingredientName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingredientName}),
+    onIngredientRemoved: (ingredientName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingredientName})
+  };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Burgerbuilder);

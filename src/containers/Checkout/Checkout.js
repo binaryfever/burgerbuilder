@@ -1,23 +1,22 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from '../Checkout/ContactData/ContactData';
-import { useStore } from '../../store/store';
 
 const Checkout = (props) => {  
-  const state = useStore(false)[0]; 
-
   const checkoutCancelledHandler  = () => {
     props.history.goBack();    
   };
+
   const checkoutContinuedHandler = () => {
     props.history.replace('/checkout/contact-data');
   };
 
   return (
     <div> 
-      <CheckoutSummary ingredients={state.ingredients} 
+      <CheckoutSummary ingredients={props.ingredients} 
         checkoutCancelled={checkoutCancelledHandler} 
         checkoutContinued={checkoutContinuedHandler} 
         />
@@ -26,4 +25,10 @@ const Checkout = (props) => {
   );
 };
 
-export default Checkout;
+const mapStateToProps = (state) =>{
+  return {
+    ingredients: state.ingredients
+  };
+};
+
+export default connect(mapStateToProps)(Checkout);

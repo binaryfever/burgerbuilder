@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage} from 'formik';
+import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
 import * as FirestoreService from '../../../services/firestore';
 import Spinner from '../../../components/UI/Spinner/Spinner';
-import { useStore } from '../../../store/store';
 
 const ContactData = (props) => {
-  const state = useStore(false)[0];
-
   const [loading, setLoading] = useState(false);
   
   let form = (
@@ -40,8 +38,8 @@ const ContactData = (props) => {
         onSubmit={async (values, {setSubmitting}) => {
           setLoading(true); 
           const order = {
-            ingredients: state.ingredients,
-            price: state.totalPrice,
+            ingredients: props.ingredients,
+            price: props.totalPrice,
             customer: {
               name: values.name,
               address: {
@@ -92,9 +90,16 @@ const ContactData = (props) => {
   return (
     <div className={classes.ContactData}>
       <h4>Enter your Contact Data</h4>
-    {form}
+      {form}
     </div>
   );
 };
 
-export default ContactData;
+const mapStateToProps = (state) =>{
+  return {
+    ingredients: state.ingredients,
+    totalPrice: state.totalPrice
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
