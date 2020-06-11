@@ -11,10 +11,11 @@ import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as burgerBuilderActions from '../../store/actions'; 
 
 const Burgerbuilder = (props) => {
-  const [error, setError] = useState(null);
-
   const [purchasing, setPurchasing] = useState(false);
-  const [loading, setLoading] = useState(false);
+    
+  useEffect( () => {
+    props.onInitIngredients();  
+  },[]);
 
   const updatePurschasedState = (ingredients) => {
     const sum = Object.keys(ingredients)
@@ -39,8 +40,6 @@ const Burgerbuilder = (props) => {
     setPurchasing(false);
   };
 
-  //TODO: move the orders to the global state so I don't have to do
-  //the below
   const purchaseConfirmedHandler = () =>{
         props.history.push('/checkout');
   };
@@ -52,7 +51,7 @@ const Burgerbuilder = (props) => {
   let orderSummary = null;
   let burger;
 
-  if(error === 'null'){
+  if(props.error === 'null'){
     burger = <Spinner />;
   }
   
@@ -79,15 +78,10 @@ const Burgerbuilder = (props) => {
           purchaseConfirmed={purchaseConfirmedHandler}
           price={props.totalPrice}/>;
   }
-  
-
-  if(loading){
-   orderSummary = <Spinner />;
-  }
 
   return (
     <React.Fragment>
-      <WithErrorHandler error={error} />
+      <WithErrorHandler error={props.error} />
       <Modal 
         show={purchasing}
         modalClosed={purchasedCanceledHandler}>
@@ -101,14 +95,16 @@ const Burgerbuilder = (props) => {
 const mapStateToProps = (state) => {
   return {
     ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    totalPrice: state.totalPrice,
+    error: state.error
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onIngredientAdded: (ingredientName) => dispatch(burgerBuilderActions.addIngredient(ingredientName)),
-    onIngredientRemoved: (ingredientName) => dispatch(burgerBuilderActions.removeIngredient(ingredientName))
+    onIngredientRemoved: (ingredientName) => dispatch(burgerBuilderActions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
   };
 };
 
