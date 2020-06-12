@@ -13,11 +13,19 @@ const db = firebase.firestore();
 
 //Create the burger order
 export const createOrder = async (order) => {
-  const response = await db.collection('orders');
-    await response.add({
+  const collection = await db.collection('orders');
+  let response = null;
+
+  response = await collection.add({
         created: firebase.firestore.FieldValue.serverTimestamp(),
         order: [{...order}]
   });
+
+  if(!response){
+    throw new Error("Error adding order");
+  }else{
+    return response.id;
+  }
 }
 
 //get the ingredients
@@ -26,7 +34,6 @@ export const getIngredients  = async () => {
       .doc('ingredient').get();
     
   if(ingredientsDoc.exists){
-    console.log(ingredientsDoc.data());
     return await ingredientsDoc.data();
   }else{
     throw new Error("Couldn't load ingredients");

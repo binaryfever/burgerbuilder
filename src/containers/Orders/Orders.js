@@ -1,35 +1,49 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 
 import Order from '../../components/Order/Order';
 import * as FirestoreService from '../../services/firestore';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import * as actions from '../../store/actions';
+import Spinner from '../../components/UI/Spinner/Spinner';
 
 const Orders = (props) => {
-  const [orders, setOrders] = useState([]);
-  const [error, setError] = useState(null); 
   
   useEffect( () => {
-    async function fetchData(){
-      try{
-        const ordersArray = await FirestoreService.getOrders();
-        setOrders(ordersArray);
-      }catch(error){
-        console.log(error);
-        setError(error);
-      }
-    }
-
-    fetchData();
+    props.onFetchOrders();
   }, []);
+  
+  let orders = <Spinner />;
+  if(!props.loading){
+    orders = (
+        props.orders.map(order => (
+        <Order key={order.id} 
+               price={Number.parseFloat(order.price).toFixed(2)} 
+               ingredients={order.ingredients}/>
+        ))
+    );
+  }
 
   return (
     <div>
-      <WithErrorHandler error={error} />
-      {orders.map(order => (
-        <Order key={order.id} price={Number.parseFloat(order.price).toFixed(2)} ingredients={order.ingredients}/>
-       ))}
+      <WithErrorHandler error={props.error} />
+      {orders}
     </div>
   );
 }
 
-export default Orders;
+const mapStateToProps = (state) => {
+  return {
+    orders: state.order.orders,
+    loading: state.order.loading,
+    error: state.order.error
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onFetchOrders: () => dispatch(actions.fetchOrders())
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);

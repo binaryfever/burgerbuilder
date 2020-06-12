@@ -8,7 +8,7 @@ import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
-import * as burgerBuilderActions from '../../store/actions'; 
+import * as actions from '../../store/actions'; 
 
 const Burgerbuilder = (props) => {
   const [purchasing, setPurchasing] = useState(false);
@@ -41,7 +41,8 @@ const Burgerbuilder = (props) => {
   };
 
   const purchaseConfirmedHandler = () =>{
-        props.history.push('/checkout');
+    props.onInitPurchase();
+    props.history.push('/checkout');
   };
   
   for (let key in disabledInfo){
@@ -94,17 +95,18 @@ const Burgerbuilder = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
-    error: state.error
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error
   }
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onIngredientAdded: (ingredientName) => dispatch(burgerBuilderActions.addIngredient(ingredientName)),
-    onIngredientRemoved: (ingredientName) => dispatch(burgerBuilderActions.removeIngredient(ingredientName)),
-    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
+    onIngredientAdded: (ingredientName) => dispatch(actions.addIngredient(ingredientName)),
+    onIngredientRemoved: (ingredientName) => dispatch(actions.removeIngredient(ingredientName)),
+    onInitIngredients: () => dispatch(actions.initIngredients()),
+    onInitPurchase: () => dispatch(actions.purchaseInit())
   };
 };
 

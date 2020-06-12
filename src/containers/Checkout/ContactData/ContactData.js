@@ -6,9 +6,9 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
 import * as FirestoreService from '../../../services/firestore';
 import Spinner from '../../../components/UI/Spinner/Spinner';
+import * as actions from '../../../store/actions';
 
 const ContactData = (props) => {
-  const [loading, setLoading] = useState(false);
   
   let form = (
       <Formik
@@ -36,7 +36,6 @@ const ContactData = (props) => {
           return errors;
         }}
         onSubmit={async (values, {setSubmitting}) => {
-          setLoading(true); 
           const order = {
             ingredients: props.ingredients,
             price: props.totalPrice,
@@ -51,14 +50,7 @@ const ContactData = (props) => {
             },
             deliveryMethod: values.deliveryMethod
           }
-          
-          try{
-            await FirestoreService.createOrder(order);
-            setLoading(false);
-            props.history.push('/');
-          }catch(error){
-            setLoading(false);
-          }
+          props.onOrderBurger(order); 
         }}
       >
         {({isSubmitting}) => (
@@ -83,7 +75,7 @@ const ContactData = (props) => {
       </Formik>
   );
 
-  if(loading){
+  if(props.loading){
     form = <Spinner />
   }
 
@@ -95,11 +87,19 @@ const ContactData = (props) => {
   );
 };
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state) => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    loading: state.order.loading
   };
 };
 
-export default connect(mapStateToProps)(ContactData);
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactData);
