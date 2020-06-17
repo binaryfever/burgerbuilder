@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage} from 'formik';
 import { connect } from 'react-redux';
 
 import Button from '../../../components/UI/Button/Button';
 import classes from './ContactData.module.css';
-import * as FirestoreService from '../../../services/firestore';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import * as actions from '../../../store/actions';
+import FireauthService from '../../../services/firebase';
 
 const ContactData = (props) => {
+  let userId = null;
+  useEffect( () => {
+    const unregisterObserver = FireauthService.auth.onAuthStateChanged(
+      (user) => {
+        if(user){
+          userId = user.uid;
+        }else{
+        }
+      }
+    );
+    return function cleanUp(){
+      unregisterObserver();
+    };
+  }, []);
   
   let form = (
       <Formik
@@ -40,6 +54,7 @@ const ContactData = (props) => {
             ingredients: props.ingredients,
             price: props.totalPrice,
             customer: {
+              customerId: userId,
               name: values.name,
               address: {
                 street: values.street,

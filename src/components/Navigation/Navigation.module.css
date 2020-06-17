@@ -7,6 +7,9 @@
   align-items: center;
   height: 100%;
 }
+.Navigation div{
+  flex-direction: row;
+}
 
 @media(min-width: 500px){
   .Navigation{

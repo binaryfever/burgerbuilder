@@ -1,4 +1,4 @@
-import * as FirestoreService from '../../services/firestore';
+import FirestoreService from '../../services/firebase';
 
 import * as actionTypes from './actionTypes';
 

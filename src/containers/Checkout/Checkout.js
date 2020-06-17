@@ -1,12 +1,22 @@
 import React, { useEffect } from 'react';
 import { Route, Redirect} from 'react-router-dom';
 import { connect } from 'react-redux';
+import FireauthService from '../../services/firebase';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
 import ContactData from '../Checkout/ContactData/ContactData';
 import * as actions from '../../store/actions';
 
 const Checkout = (props) => {  
+   
+  useEffect( () => {
+    const unregisterObserver = FireauthService.auth.onAuthStateChanged(
+      (user) => console.log(user.email)
+    );
+    return function cleanUp(){
+      unregisterObserver();
+    };
+  });
 
   const checkoutCancelledHandler  = () => {
     props.history.goBack();    

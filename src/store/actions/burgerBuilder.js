@@ -1,5 +1,5 @@
 import * as actionTypes from './actionTypes';
-import * as FirestoreService from '../../services/firestore';
+import Firebase from '../../services/firebase';
 
 export const addIngredient = (ingredientName) => {
   return {
@@ -32,9 +32,10 @@ export const initIngredients = () => {
   return async dispatch => {
     let response = null;
     try{
-      response = await FirestoreService.getIngredients();
+      response = await Firebase.getIngredients();
       dispatch(setIngredients(response));
     }catch(error){
+      console.log(error);
       dispatch(fetchIngredientsFailed());
     }
   };
