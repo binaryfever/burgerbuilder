@@ -63,11 +63,11 @@ export const fetchOrdersStart = () => {
   };
 };
 
-export const fetchOrders = () => {
+export const fetchOrders = (userId) => {
   return async dispatch => {
     dispatch(fetchOrdersStart());
     try{
-      const ordersArray = await FirestoreService.getOrders();
+      const ordersArray = await FirestoreService.getOrders(userId);
       dispatch(fetchOrdersSuccess(ordersArray));
     }catch(error){
       console.log(error);

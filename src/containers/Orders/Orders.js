@@ -5,11 +5,22 @@ import Order from '../../components/Order/Order';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../store/actions';
 import Spinner from '../../components/UI/Spinner/Spinner';
+import FireauthService from '../../services/firebase';
 
 const Orders = (props) => {
   
   useEffect( () => {
-    props.onFetchOrders();
+    const unregisterObserver = FireauthService.auth.onAuthStateChanged(
+      (user) => {
+        if(user){
+          props.onFetchOrders(user.uid);
+        }else{
+        }
+      }
+    );
+    return function cleanUp(){
+      unregisterObserver();
+    };
   }, []);
   
   let orders = <Spinner />;
@@ -41,7 +52,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders())
+    onFetchOrders: (userId) => dispatch(actions.fetchOrders(userId))
   };
 };
 

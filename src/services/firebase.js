@@ -51,7 +51,7 @@ class Firebase {
   //get the ingredients
   async getIngredients(){
     const ingredientsDoc = await this.db.collection('ingredients')
-        .doc('ingredient').get();
+      .doc('ingredient').get();
       
     if(ingredientsDoc.exists){
       return await ingredientsDoc.data();
@@ -61,16 +61,17 @@ class Firebase {
   }
 
   //get orders return an array of orders
-  async getOrders(){
-    const orderSnapshot = await this.db.collection('orders').get();
+  async getOrders(userId){
+    const ordersRef = await this.db.collection('orders')
+      .where("customerId", "==", userId).get();
     let orderDocs = [];
     let ordersArray = [];
-    
-    if(!orderSnapshot.empty){
-      orderDocs = await orderSnapshot.docs;
-      
+    if(!ordersRef.empty){
+      orderDocs = await ordersRef.docs;
+
       orderDocs.forEach( doc => {
         let id = doc.id;
+      console.log("do I make it here"); 
         let orders = doc.data().order;
         orders.forEach(order =>{
           ordersArray.push({
