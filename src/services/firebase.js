@@ -38,7 +38,7 @@ class Firebase {
 
     response = await collection.add({
           created: app.firestore.FieldValue.serverTimestamp(),
-          order: [{...order}]
+          order: {...order}
     });
 
     if(!response){
@@ -61,24 +61,22 @@ class Firebase {
   }
 
   //get orders return an array of orders
+  //TODO: Something is wrong with the query
   async getOrders(userId){
+    console.log(userId);
     const ordersRef = await this.db.collection('orders')
-      .where("customerId", "==", userId).get();
+      .where("order.customer.customerId", "==", userId).get();
     let orderDocs = [];
     let ordersArray = [];
+    
     if(!ordersRef.empty){
       orderDocs = await ordersRef.docs;
 
       orderDocs.forEach( doc => {
-        let id = doc.id;
-      console.log("do I make it here"); 
-        let orders = doc.data().order;
-        orders.forEach(order =>{
-          ordersArray.push({
-            id: id,
-            price: order.price,
-            ingredients: order.ingredients
-          });
+        ordersArray.push({
+            id: doc.id,
+            price: doc.data().order.price,
+            ingredients: doc.data().order.ingredients 
         });
       });
 
@@ -89,5 +87,6 @@ class Firebase {
 
   }
 }
+
 
 export default new Firebase();

@@ -13,6 +13,7 @@ const Orders = (props) => {
     const unregisterObserver = FireauthService.auth.onAuthStateChanged(
       (user) => {
         if(user){
+          console.log(user.uid);
           props.onFetchOrders(user.uid);
         }else{
         }
