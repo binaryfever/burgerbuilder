@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-
 import { Formik, Form, Field, ErrorMessage} from 'formik';
+import { connect } from 'react-redux';
 
 import FireauthService from '../../services/firebase';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
 
-export const Auth = () => {
+export const Auth = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect( () => {
@@ -59,14 +59,23 @@ export const Auth = () => {
         )}
       </Formik>
   );
-  if (authenticated) {
-    form = <Redirect to='/' />;
+  if (authenticated && props.building){
+    form = <Redirect to='/checkout' />;
+  }else if(authenticated){
+    form = <Redirect to='=' />;
   }
+
     return (
              <div>
                {form}
              </div>
            );
 }; 
- 
-export default Auth;
+
+const mapStateToProps = (state) => {
+  return {
+    building: state.burgerBuilder.building
+  }
+};
+
+export default connect(mapStateToProps)(Auth);

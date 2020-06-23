@@ -8,12 +8,25 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import WithErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import * as actions from '../../store/actions'; 
+import FireauthService from '../../services/firebase';
 
 const Burgerbuilder = (props) => {
   const [purchasing, setPurchasing] = useState(false);
-    
+  const [authenticated, setAuthenticated] = useState(false); 
+  
   useEffect( () => {
     props.onInitIngredients();  
+
+    const unregisterObserver = FireauthService.auth.onAuthStateChanged(
+      (user) => {
+        if(user){
+          setAuthenticated(!!user);
+        }
+      }
+    );
+    return function cleanUp(){
+      unregisterObserver();
+    };
   },[]);
 
   const updatePurschasedState = (ingredients) => {
@@ -76,6 +89,7 @@ const Burgerbuilder = (props) => {
           ingredients={props.ingredients} 
           purchasedCanceled={purchasedCanceledHandler}
           purchaseConfirmed={purchaseConfirmedHandler}
+          authenticated={authenticated} 
           price={props.totalPrice}/>;
   }
 

@@ -21,7 +21,7 @@ const Layout = ( props ) => {
     return function cleanUp(){
       unregisterObserver();
     };
-  });
+  }, []);
 
   const [showSideDrawer, setShowSideDrawer] = useState(false);
 

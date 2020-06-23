@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-
+import { Redirect, Link } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage} from 'formik';
+import { connect } from 'react-redux';
 
 import FireauthService from '../../../services/firebase';
 import Button from '../../../components/UI/Button/Button';
 import classes from '../Auth.module.css';
 
-export const Login = () => {
+export const Login = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect( () => {
@@ -42,7 +42,6 @@ export const Login = () => {
           return errors;
         }}
         onSubmit={(values, {setSubmitting}) => {
-          //TODO: this returns a promise so do something with it 
           FireauthService.login(values.email, values.password);
         }}
       >
@@ -55,14 +54,18 @@ export const Login = () => {
             <Button type="submit" btnType="Success" disabled={isSubmitting}>
              Login 
             </Button>
+            <Link to="/auth">Sign Up</Link>
           </Form>
         )}
       </Formik>
   );
 
-  if (authenticated) {
+  if (authenticated && props.building) {
+    form = <Redirect to='/checkout' />;
+  }else if(authenticated){
     form = <Redirect to='/' />;
   }
+
   return (
     <div>
       <h2>Login</h2>
@@ -71,4 +74,10 @@ export const Login = () => {
   );
 }; 
  
-export default Login;
+const mapStateToProps = (state) => {
+  return {
+    building: state.burgerBuilder.building
+  }
+};
+
+export default connect(mapStateToProps)(Login);
