@@ -17,14 +17,18 @@ function App() {
     const unregisterObserver = FireauthService.auth.onAuthStateChanged(
       (user) => {
         if(user){
+          console.log(!!user);
           setAuthenticated(!!user);
+        }else {
+          console.log(user);
+          setAuthenticated(false);
         }
       }
     );
     return function cleanUp(){
       unregisterObserver();
     };
-  },[]);
+  });
 
   //Guard the routes
   let routes = (
@@ -47,10 +51,10 @@ function App() {
     </Switch>
     );
   }
-  console.log(authenticated);
+  
   return (
     <div>
-      <Layout>
+      <Layout authenticated={authenticated}>
         {routes}
       </Layout>
     </div>

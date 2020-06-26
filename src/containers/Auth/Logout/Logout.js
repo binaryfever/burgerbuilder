@@ -4,8 +4,16 @@ import { Redirect } from 'react-router-dom';
 
 const Logout = () => {
   useEffect( () => {
-    FireauthService.logout();
-  });
+    async function handleLogout(){
+      try{
+        await FireauthService.logout();
+      }catch(error){
+        console.log(error);
+      }
+    }
+    handleLogout();
+
+  }, []);
 
   return (
     <Redirect to="/" />

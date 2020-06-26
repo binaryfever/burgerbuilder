@@ -3,7 +3,8 @@ import React from 'react';
 import NavigationItem from './NavgiationItem/NavigationItem.js';
 import classes from './Navigation.module.css';
 
-const navigation = (props) => (
+const navigation = (props) => {
+  return (
   <nav>
     <ul className={classes.Navigation}>
       <NavigationItem link="/" exact>Burger Builder</NavigationItem>
@@ -16,7 +17,7 @@ const navigation = (props) => (
           ) : <NavigationItem link="/login">Login</NavigationItem>
       }
     </ul>
-  </nav>
-);
+  </nav>);
+};
 
 export default navigation;
