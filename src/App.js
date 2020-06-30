@@ -14,31 +14,31 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false); 
   
   useEffect( () => {
-    const unregisterObserver = FireauthService.auth.onAuthStateChanged(
-      (user) => {
-        if(user){
-          console.log(!!user);
-          setAuthenticated(!!user);
-        }else {
-          console.log(user);
-          setAuthenticated(false);
-        }
+  const unregisterObserver = FireauthService.auth.onAuthStateChanged(
+    (user) => {
+      if(user){
+        console.log("user is authenticated:", !!user);
+        setAuthenticated(!!user);
+      }else {
+        console.log("user is authenticated:", !!user);
+        setAuthenticated(!!user);
       }
-    );
-    return function cleanUp(){
-      unregisterObserver();
-    };
-  });
-
-  //Guard the routes
-  let routes = (
-    <Switch>
-      <Route path="/auth" component={Auth} />
-      <Route path="/login" component={Login} />
-      <Route path="/" component={BurgerBuilder} /> 
-      <Redirect to="/" />
-    </Switch>
+    }
   );
+  return function cleanUp(){
+    unregisterObserver();
+  };
+});
+
+//Guard the routes
+let routes = (
+  <Switch>
+    <Route path="/auth" component={Auth} />
+    <Route path="/login" component={Login} />
+    <Route path="/" component={BurgerBuilder} /> 
+    <Redirect to="/" />
+  </Switch>
+);
 
   if(authenticated){
     routes = (

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import FireauthService from '../../services/firebase';
 import Button from '../../components/UI/Button/Button';
 import classes from './Auth.module.css';
+import * as actions from '../../store/actions/';
 
 export const Auth = (props) => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -42,34 +43,34 @@ export const Auth = (props) => {
           return errors;
         }}
         onSubmit={(values, {setSubmitting}) => {
-          //TODO: this returns a promise so do something with it 
-          FireauthService.register(values.email, values.password);
-        }}
-      >
-        {({isSubmitting}) => (
-          <Form>
-            <Field type="email" name="email" placeholder="Email"/>
-            <ErrorMessage name="email" component="div" className={classes.Invalid}/>
-            <Field type="password" name="password" placeholder="Password"/>
-            <ErrorMessage name="password" component="div" className={classes.Invalid}/>
-            <Button type="submit" btnType="Success" disabled={isSubmitting}>
-             Sign Up 
-            </Button>
-          </Form>
-        )}
-      </Formik>
-  );
-  if (authenticated && props.building){
-    form = <Redirect to='/checkout' />;
-  }else if(authenticated){
-    form = <Redirect to='=' />;
-  }
+          props.onRegister(values.email, values.password);
+      }}
+    >
+      {({isSubmitting}) => (
+        <Form>
+          <Field type="email" name="email" placeholder="Email"/>
+          <ErrorMessage name="email" component="div" className={classes.Invalid}/>
+          <Field type="password" name="password" placeholder="Password"/>
+          <ErrorMessage name="password" component="div" className={classes.Invalid}/>
+          <Button type="submit" btnType="Success" disabled={isSubmitting}>
+            Sign Up 
+          </Button>
+        </Form>
+      )}
+    </Formik>
+);
 
-    return (
-             <div>
-               {form}
-             </div>
-           );
+if (authenticated && props.building){
+  form = <Redirect to='/checkout' />;
+}else if(authenticated){
+  form = <Redirect to='=' />;
+}
+
+  return (
+            <div>
+              {form}
+            </div>
+          );
 }; 
 
 const mapStateToProps = (state) => {
@@ -78,4 +79,10 @@ const mapStateToProps = (state) => {
   }
 };
 
-export default connect(mapStateToProps)(Auth);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onRegister: (email, password) => dispatch(actions.register(email, password))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);
