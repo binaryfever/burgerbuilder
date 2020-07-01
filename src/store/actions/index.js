@@ -10,6 +10,7 @@ export {
 } from './order';
 export {
   register,
-  login
+  login,
+  logout
 } from './auth';
 

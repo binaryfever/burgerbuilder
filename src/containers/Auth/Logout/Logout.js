@@ -1,18 +1,13 @@
 import React, { useEffect } from 'react';
 import FireauthService from '../../../services/firebase';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-const Logout = () => {
+import * as actions from '../../../store/actions/';
+
+const Logout = (props) => {
   useEffect( () => {
-    async function handleLogout(){
-      try{
-        await FireauthService.logout();
-      }catch(error){
-        console.log(error);
-      }
-    }
-    handleLogout();
-
+    props.onLogout();
   }, []);
 
   return (
@@ -20,4 +15,10 @@ const Logout = () => {
   );
 };
 
-export default Logout;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogout: () => dispatch(actions.logout())
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Logout);

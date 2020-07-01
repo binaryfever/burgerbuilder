@@ -46,3 +46,15 @@ export const login = (email, password) => {
     }
   };
 };
+
+export const logout = () => {
+  return async dispatch => {
+    try{
+      await FireAuthService.logout();
+    }catch(error){
+      console.log(error);
+    }
+  };
+};
+
+  
