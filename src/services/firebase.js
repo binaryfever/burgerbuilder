@@ -2,8 +2,8 @@ import app from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-const REACT_API_KEY = process.env.REACT_APP_apiKey;
-const PROJECT_ID = process.env.REACT_APP_projectId;
+const REACT_API_KEY = process.env.REACT_APP_API_KEY;
+const PROJECT_ID = process.env.REACT_APP_PROJECT_ID;
 
 export const config = {
     apiKey: REACT_API_KEY,

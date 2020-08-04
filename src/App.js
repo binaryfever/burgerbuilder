@@ -12,7 +12,7 @@ import FireauthService from './services/firebase';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false); 
-  
+   
   useEffect( () => {
   const unregisterObserver = FireauthService.auth.onAuthStateChanged(
     (user) => {
