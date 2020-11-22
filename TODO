@@ -1,0 +1,3 @@
+-Fix the logout
+  -Read the firebase api about authentication to see what is returned from logging out
+

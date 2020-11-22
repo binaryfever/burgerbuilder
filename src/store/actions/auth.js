@@ -50,7 +50,8 @@ export const login = (email, password) => {
 export const logout = () => {
   return async dispatch => {
     try{
-      await FireAuthService.logout();
+      const response = await FireAuthService.logout();
+      console.log(response);
     }catch(error){
       console.log(error);
     }

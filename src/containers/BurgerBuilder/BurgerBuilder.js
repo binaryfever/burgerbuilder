@@ -16,7 +16,6 @@ const Burgerbuilder = (props) => {
   
   useEffect( () => {
     props.onInitIngredients();  
-
     const unregisterObserver = FireauthService.auth.onAuthStateChanged(
       (user) => {
         if(user){
